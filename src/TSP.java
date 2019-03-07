@@ -34,9 +34,9 @@ public class TSP {
             for (Item item : items) {
                 if(item.assignNodeNumber==city1.index) {
                     if(item.weight+weight<=capacity) {
-                        System.out.println(city1);
+//                        System.out.println(city1);
                         weight += item.weight;
-                        System.out.println("Weight= " + weight);
+//                        System.out.println("Weight= " + weight);
                         itemsChosen.add(item);
                     }
                     break;

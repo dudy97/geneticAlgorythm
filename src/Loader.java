@@ -57,6 +57,12 @@ public class Loader {
 
     }
 
+    public void shuffle() {
+        cities.remove(cities.size()-1);
+        Collections.shuffle(cities);
+        cities.add(cities.get(0));
+    }
+
 
 
 }
