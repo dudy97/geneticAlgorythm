@@ -24,13 +24,18 @@ public class TSP {
         this.capacity = capacity;
     }
 
+    public void setCities(ArrayList<City> cities) {
+        this.cities = cities;
+    }
+
     double countF() {
         double time = 0;
         int weight = 0;
         for(int i=0; i<cities.size()-1; i++) {
             City city1 = cities.get(i);
             City city2 = cities.get(i+1);
-            double dist = countDist(city1.x, city1.x, city2.x, city2.y);
+            double dist = countDist(city1.x, city1.y, city2.x, city2.y);
+//            System.out.println("DIst = " + dist);
             for (Item item : items) {
                 if(item.assignNodeNumber==city1.index) {
                     if(item.weight+weight<=capacity) {
@@ -43,6 +48,7 @@ public class TSP {
                 }
             }
             time+=dist/(1-(weight*(0.9/capacity)));
+//            System.out.println("Time = " + time);
         }
         return time;
    }

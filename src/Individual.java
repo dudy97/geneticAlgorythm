@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 
-public class Individual {
+public class Individual implements Comparable<Individual>{
     ArrayList<City> cities;
+    double value;
 
     public Individual() {
     }
@@ -16,15 +18,40 @@ public class Individual {
         return cities;
     }
 
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
     public void setCities(ArrayList<City> cities) {
         this.cities = cities;
     }
 
     public void mutate() {
-        int index1 = (int) Math.round(Math.random()*cities.size());
-        int index2 = (int) Math.round(Math.random()*cities.size());
+        this.cities.remove(this.cities.size()-1);
+        Random r = new Random();
+        int index1 = r.nextInt(cities.size()-1);
+        int index2 = r.nextInt(cities.size()-1);
         while(index1==index2)
-            index2 = (int) Math.round(Math.random()*cities.size());
+            index2 = r.nextInt(cities.size()-1);
         Collections.swap(cities, index1, index2);
+        this.cities.add(this.cities.get(0));
     }
+
+    @Override
+    public String toString() {
+        return "Individual{" +
+                "cities=" + cities +
+                ", value=" + value +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Individual o) {
+        return this.value > o.getValue() ? 1 : -1;
+    }
+
 }
