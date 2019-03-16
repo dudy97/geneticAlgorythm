@@ -11,13 +11,13 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-    private static final int  NUMBER_OF_ITERATIONS= 100;
+    private static final int  NUMBER_OF_ITERATIONS= 200;
     private static final int  POPULATION= 500;
     private static final double  CHANCE_OF_CROSSOVER= 0.7;
     private static final double  CHANCE_OF_MUTATION= 0.3;
     public static void main(String[] args) {
         Loader l = new Loader();
-        l.readFromFile("D:\\JA\\Intelli_projekty\\si1\\files\\trivial_1.ttp");
+        l.readFromFile("D:\\JA\\Intelli_projekty\\si1\\files\\hard_3.ttp");
         l.proceedLines();
         ArrayList<Individual> population = new ArrayList<>();
         ArrayList<String> logs = new ArrayList<>();
@@ -74,21 +74,22 @@ public class Main {
                     newPopulation.get(i).setValue(countVal(newPopulation.get(i).cities, l.items, l.capacityOfKnapsack));
                 }
             }
-            double fitness = countVal(Collections.max(newPopulation).cities, l.items, l.capacityOfKnapsack);
+            population.addAll(newPopulation);
+            double fitness = countVal(Collections.max(population).cities, l.items, l.capacityOfKnapsack);
 //            if(iter%10==0) {
                 System.out.println("Iteracja nr. " + iter);
                 System.out.println(fitness);
-                System.out.println(Collections.max(newPopulation));
+                System.out.println(Collections.max(population));
 //            }
-            logs.add(iter + "," + Math.round(fitness));
-            saveToFile("hard_01_logs", logs);
-            Collections.copy(population , newPopulation);
+//            logs.add(iter + "," + Math.round(fitness));
+//            saveToFile("hard_01_logs", logs);
+            Collections.sort(population);
+            for(int i=0; i<POPULATION; i++){
+                population.remove(i);
+            }
             newPopulation.clear();
             iter++;
-
         }
-
-
     }
 
     public static void saveToFile(String fileName, ArrayList<String> logs){
