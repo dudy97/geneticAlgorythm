@@ -11,11 +11,13 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-    private static final int  NUMBER_OF_ITERATIONS= 2000;
-    private static final int  POPULATION= 1000;
+    private static final int  NUMBER_OF_ITERATIONS= 100;
+    private static final int  POPULATION= 500;
+    private static final double  CHANCE_OF_CROSSOVER= 0.7;
+    private static final double  CHANCE_OF_MUTATION= 0.3;
     public static void main(String[] args) {
         Loader l = new Loader();
-        l.readFromFile("D:\\JA\\Intelli_projekty\\si1\\files\\hard_3.ttp");
+        l.readFromFile("D:\\JA\\Intelli_projekty\\si1\\files\\trivial_1.ttp");
         l.proceedLines();
         ArrayList<Individual> population = new ArrayList<>();
         ArrayList<String> logs = new ArrayList<>();
@@ -60,24 +62,24 @@ public class Main {
                 selection.clear();
             }
             for (int i = 0; i < newPopulation.size() - 1; i=i+2) {
-                if (random.nextDouble() < 0.7) {
+                if (random.nextDouble() < CHANCE_OF_CROSSOVER) {
                     crossover(newPopulation, i , i+1);
                     newPopulation.get(i).setValue(countVal(newPopulation.get(i).cities, l.items, l.capacityOfKnapsack));
                     newPopulation.get(i+1).setValue(countVal(newPopulation.get(i+1).cities, l.items, l.capacityOfKnapsack));
                 }
             }
             for (int i = 0; i < newPopulation.size(); i++) {
-                if (random.nextDouble() < 0.1) {
+                if (random.nextDouble() < CHANCE_OF_MUTATION) {
                     newPopulation.get(i).mutate();
                     newPopulation.get(i).setValue(countVal(newPopulation.get(i).cities, l.items, l.capacityOfKnapsack));
                 }
             }
             double fitness = countVal(Collections.max(newPopulation).cities, l.items, l.capacityOfKnapsack);
-            if(iter%10==0) {
+//            if(iter%10==0) {
                 System.out.println("Iteracja nr. " + iter);
                 System.out.println(fitness);
                 System.out.println(Collections.max(newPopulation));
-            }
+//            }
             logs.add(iter + "," + Math.round(fitness));
             saveToFile("hard_01_logs", logs);
             Collections.copy(population , newPopulation);
