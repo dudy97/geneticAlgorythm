@@ -11,10 +11,12 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-    private static final int  NUMBER_OF_ITERATIONS= 200;
-    private static final int  POPULATION= 500;
+    private static final int  NUMBER_OF_ITERATIONS= 2000;
+    private static final int  POPULATION= 1000;
+    private static final int  TOURNAMENT_SIZE= 10;
     private static final double  CHANCE_OF_CROSSOVER= 0.7;
     private static final double  CHANCE_OF_MUTATION= 0.3;
+
     public static void main(String[] args) {
         Loader l = new Loader();
         l.readFromFile("D:\\JA\\Intelli_projekty\\si1\\files\\hard_3.ttp");
@@ -39,28 +41,7 @@ public class Main {
         bestInd.setValue(-100000);
 
         while(iter<NUMBER_OF_ITERATIONS) {
-            ArrayList<Individual> selection = new ArrayList<>();
-            for (int i = 0; i < population.size(); i++) {
-                ArrayList<Individual> toAdd = new ArrayList<>();
-                for (int j = 0; j < 5; j++) {
-                    int idx = random.nextInt(population.size() - 1);
-                    Individual tempI = population.get(idx);
-                    toAdd.add(tempI);
-                    population.remove(idx);
-                    Individual indForAdd = new Individual();
-                    indForAdd.setCities(tempI.getCities());
-                    indForAdd.setValue(countVal(tempI.getCities(), l.items, l.capacityOfKnapsack));
-                    selection.add(indForAdd);
-                }
-                population.addAll(toAdd);
-                Collections.sort(selection);
-                ArrayList<City> cities = new ArrayList<>();
-                cities = copyArray(cities, selection.get(selection.size()-1).cities);
-                Individual newI = new Individual(cities);
-                newI.setValue(countVal(newI.cities, l.items, l.capacityOfKnapsack));
-                newPopulation.add(newI);
-                selection.clear();
-            }
+            tournamentSelection(population, newPopulation, random, TOURNAMENT_SIZE, l);
             for (int i = 0; i < newPopulation.size() - 1; i=i+2) {
                 if (random.nextDouble() < CHANCE_OF_CROSSOVER) {
                     crossover(newPopulation, i , i+1);
@@ -81,12 +62,14 @@ public class Main {
                 System.out.println(fitness);
                 System.out.println(Collections.max(population));
 //            }
-//            logs.add(iter + "," + Math.round(fitness));
-//            saveToFile("hard_01_logs", logs);
+            logs.add(iter + "," + Math.round(fitness));
+            saveToFile("hard_3_20190316", logs);
             Collections.sort(population);
+//            System.out.println("ROzmiar przed = " + population.size());
             for(int i=0; i<POPULATION; i++){
                 population.remove(i);
             }
+//            System.out.println("ROzmiar po = " + population.size());
             newPopulation.clear();
             iter++;
         }
@@ -104,6 +87,31 @@ public class Main {
             writer.write(sb.toString());
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public static void tournamentSelection(ArrayList<Individual> population, ArrayList<Individual> newPopulation, Random random, int tournamentSize, Loader l) {
+        ArrayList<Individual> selection = new ArrayList<>();
+        for (int i = 0; i < population.size(); i++) {
+            ArrayList<Individual> toAdd = new ArrayList<>();
+            for (int j = 0; j < tournamentSize; j++) {
+                int idx = random.nextInt(population.size() - 1);
+                Individual tempI = population.get(idx);
+                toAdd.add(tempI);
+                population.remove(idx);
+                Individual indForAdd = new Individual();
+                indForAdd.setCities(tempI.getCities());
+                indForAdd.setValue(countVal(tempI.getCities(), l.items, l.capacityOfKnapsack));
+                selection.add(indForAdd);
+            }
+            population.addAll(toAdd);
+            Collections.sort(selection);
+            ArrayList<City> cities = new ArrayList<>();
+            cities = copyArray(cities, selection.get(selection.size()-1).cities);
+            Individual newI = new Individual(cities);
+            newI.setValue(countVal(newI.cities, l.items, l.capacityOfKnapsack));
+            newPopulation.add(newI);
+            selection.clear();
         }
     }
 
