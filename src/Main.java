@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static javax.swing.text.html.HTML.Tag.HEAD;
+
 public class Main {
     private static final int  NUMBER_OF_ITERATIONS= 100;
     private static final int  POPULATION= 100;
