@@ -4,18 +4,15 @@ import java.awt.font.NumericShaper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-    private static final int  NUMBER_OF_ITERATIONS= 2000;
-    private static final int  POPULATION= 1000;
-    private static final int  TOURNAMENT_SIZE= 10;
+    private static final int  NUMBER_OF_ITERATIONS= 100;
+    private static final int  POPULATION= 100;
+    private static final int  TOURNAMENT_SIZE= 5;
     private static final double  CHANCE_OF_CROSSOVER= 0.7;
-    private static final double  CHANCE_OF_MUTATION= 0.3;
+    private static final double  CHANCE_OF_MUTATION= 0.1;
 
     public static void main(String[] args) {
         Loader l = new Loader();
@@ -50,10 +47,9 @@ public class Main {
                 }
             }
             for (int i = 0; i < newPopulation.size(); i++) {
-                if (random.nextDouble() < CHANCE_OF_MUTATION) {
-                    newPopulation.get(i).mutate();
-                    newPopulation.get(i).setValue(countVal(newPopulation.get(i).cities, l.items, l.capacityOfKnapsack));
-                }
+                newPopulation.get(i).mutate(CHANCE_OF_MUTATION);
+                newPopulation.get(i).setValue(countVal(newPopulation.get(i).cities, l.items, l.capacityOfKnapsack));
+
             }
             population.addAll(newPopulation);
             double fitness = countVal(Collections.max(population).cities, l.items, l.capacityOfKnapsack);
@@ -66,8 +62,8 @@ public class Main {
             saveToFile("hard_3_20190316", logs);
             Collections.sort(population);
 //            System.out.println("ROzmiar przed = " + population.size());
-            for(int i=0; i<POPULATION; i++){
-                population.remove(i);
+            for(int i=0; i<POPULATION; i+=1){
+                population.remove(0);
             }
 //            System.out.println("ROzmiar po = " + population.size());
             newPopulation.clear();
