@@ -12,7 +12,7 @@ public class Main {
     private static final int  POPULATION= 100;
     private static final int  TOURNAMENT_SIZE= 5;
     private static final double  CHANCE_OF_CROSSOVER= 0.7;
-    private static final double  CHANCE_OF_MUTATION= 0.1;
+    private static final double  CHANCE_OF_MUTATION= 0.01;
 
     public static void main(String[] args) {
         Loader l = new Loader();
