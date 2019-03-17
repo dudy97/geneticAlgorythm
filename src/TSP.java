@@ -39,25 +39,22 @@ public class TSP {
             City city1 = cities.get(i);
             City city2 = cities.get(i+1);
             double dist = countDist(city1.x, city1.y, city2.x, city2.y);
-//            System.out.println("DIst = " + dist);
-            Item bestItem = new Item(0, Integer.MAX_VALUE);
+            Item bestItem = new Item(-1, Integer.MAX_VALUE);
             for (Item item : items) {
                 if(item.assignNodeNumber==city1.index) {
                     if(item.weight+weight<=capacity) {
-//                        System.out.println(city1);
-//                        System.out.println("Weight= " + weight);
-                        if((item.profit/item.weight)>(bestItem.profit/bestItem.weight))
+                        if (((double) item.profit / item.weight) > ((double) bestItem.profit / bestItem.weight))
                             bestItem = item;
                     }
                 }
             }
-            if(bestItem.profit != 0){
+            if(bestItem.profit != -1){
                 weight += bestItem.weight;
                 itemsChosen.add(bestItem);
             }
             time+=dist/(1-(weight*(0.9/capacity)));
-//            System.out.println("Time = " + time);
         }
+        assert weight <= capacity;
         return time;
    }
 

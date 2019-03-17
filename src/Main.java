@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static javax.swing.text.html.HTML.Tag.HEAD;
 
 public class Main {
-    private static final int  NUMBER_OF_ITERATIONS= 100;
+    private static final int  NUMBER_OF_ITERATIONS= 200;
     private static final int  POPULATION= 100;
     private static final int  TOURNAMENT_SIZE= 5;
     private static final double  CHANCE_OF_CROSSOVER= 0.7;
@@ -40,7 +40,8 @@ public class Main {
         bestInd.setValue(-100000);
 
         while(iter<NUMBER_OF_ITERATIONS) {
-            tournamentSelection(population, newPopulation, random, TOURNAMENT_SIZE, l);
+//            tournamentSelection(population, newPopulation, random, TOURNAMENT_SIZE, l);
+            ruletteSelection(population, newPopulation, random, l);
             for (int i = 0; i < newPopulation.size() - 1; i=i+2) {
                 if (random.nextDouble() < CHANCE_OF_CROSSOVER) {
                     crossover(newPopulation, i , i+1);
@@ -85,6 +86,31 @@ public class Main {
             writer.write(sb.toString());
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
+        }
+    }
+    public static void ruletteSelection(ArrayList<Individual> pop, ArrayList<Individual> newPop, Random rng, Loader l) {
+        Double worst = (Collections.min(pop).value < 0)?  Collections.min(pop).value * (-1) : 0;
+        ArrayList<Double> fitness = new ArrayList<>();
+        fitness.add(pop.get(0).value + worst);
+        for (int i = 1; i < pop.size(); i++)
+        {
+            double fit = pop.get(i).value + worst;
+            fitness.add(fitness.get(i-1) + fit);
+        }
+        for (int i = 0; i < pop.size(); i++)
+        {
+            double randomFitness = rng.nextDouble() * fitness.get(fitness.size()-1);
+            int index = Collections.binarySearch(fitness, randomFitness);
+            if (index < 0)
+            {
+                // Convert negative insertion point to array index.
+                index = Math.abs(index + 1);
+            }
+            ArrayList<City> cities = new ArrayList<>();
+            cities = copyArray(cities, pop.get(index).cities);
+            Individual newI = new Individual(cities);
+            newI.setValue(countVal(newI.cities, l.items, l.capacityOfKnapsack));
+            newPop.add(newI);
         }
     }
 

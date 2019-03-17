@@ -12,11 +12,7 @@ public class City {
 
     @Override
     public String toString() {
-        return "City{" +
-                "index=" + index +
-                ", x=" + x +
-                ", y=" + y +
-                '}';
+        return index+"";
     }
 
     @Override

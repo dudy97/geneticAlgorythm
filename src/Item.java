@@ -15,11 +15,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item{" +
-                "index=" + index +
-                ", profit=" + profit +
-                ", weight=" + weight +
-                ", assignNodeNumber=" + assignNodeNumber +
-                '}';
+        return index+"";
     }
 }

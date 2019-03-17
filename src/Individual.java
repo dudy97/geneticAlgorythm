@@ -41,12 +41,18 @@ public class Individual implements Comparable<Individual>{
         this.cities.add(this.cities.get(0));
     }
 
+//    @Override
+//    public String toString() {
+//        return "Individual{" +
+//                "cities=" + cities +
+//                ", value=" + value +
+//                '}';
+//    }
+
+
     @Override
     public String toString() {
-        return "Individual{" +
-                "cities=" + cities +
-                ", value=" + value +
-                '}';
+        return cities+"";
     }
 
     @Override
