@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static javax.swing.text.html.HTML.Tag.HEAD;
 
 public class Main {
-    private static final int  NUMBER_OF_ITERATIONS= 200;
+    private static final int  NUMBER_OF_ITERATIONS= 100;
     private static final int  POPULATION= 100;
     private static final int  TOURNAMENT_SIZE= 5;
     private static final double  CHANCE_OF_CROSSOVER= 0.7;
@@ -40,8 +40,8 @@ public class Main {
         bestInd.setValue(-100000);
 
         while(iter<NUMBER_OF_ITERATIONS) {
-//            tournamentSelection(population, newPopulation, random, TOURNAMENT_SIZE, l);
-            ruletteSelection(population, newPopulation, random, l);
+            tournamentSelection(population, newPopulation, random, TOURNAMENT_SIZE, l);
+//            ruletteSelection(population, newPopulation, random, l);
             for (int i = 0; i < newPopulation.size() - 1; i=i+2) {
                 if (random.nextDouble() < CHANCE_OF_CROSSOVER) {
                     crossover(newPopulation, i , i+1);
@@ -54,21 +54,16 @@ public class Main {
                 newPopulation.get(i).setValue(countVal(newPopulation.get(i).cities, l.items, l.capacityOfKnapsack));
 
             }
-            population.addAll(newPopulation);
-            double fitness = countVal(Collections.max(population).cities, l.items, l.capacityOfKnapsack);
+
+            double fitness = countVal(Collections.max(newPopulation).cities, l.items, l.capacityOfKnapsack);
 //            if(iter%10==0) {
                 System.out.println("Iteracja nr. " + iter);
                 System.out.println(fitness);
-                System.out.println(Collections.max(population));
+                System.out.println(Collections.max(newPopulation));
 //            }
             logs.add(iter + "," + Math.round(fitness));
             saveToFile("hard_3_20190316", logs);
-            Collections.sort(population);
-//            System.out.println("ROzmiar przed = " + population.size());
-            for(int i=0; i<POPULATION; i+=1){
-                population.remove(0);
-            }
-//            System.out.println("ROzmiar po = " + population.size());
+            Collections.copy(population , newPopulation);
             newPopulation.clear();
             iter++;
         }
@@ -147,59 +142,10 @@ public class Main {
         return value-time;
     }
 
-    public static void crossover(Individual i1, Individual i2) {
-        int size = i1.cities.size();
-        int idx1 = ThreadLocalRandom.current().nextInt(size/4, size/2);
-        int idx2 = ThreadLocalRandom.current().nextInt(size/2, (int) size*3/4);
-//        System.out.println("Idx1 =" + idx1);
-//        System.out.println("Idx2 = " + idx2);
-
-//        int idx1 = 3;
-//        int idx2 = 6;
-
-        final int start = Math.min(idx1, idx2);
-        final int end = Math.max(idx2, idx1);
-
-        ArrayList<City> temp1 = new ArrayList<City>(i1.cities.subList(idx1, idx2));
-        ArrayList<City> temp2 = new ArrayList<City>(i2.cities.subList(idx1, idx2));
-
-        int currentIndex = 0;
-        City currentCityInI1 = null;
-        City currentCityInI2 = null;
-
-        for(int i=0; i<size; i++) {
-            currentIndex = (end + i) % size;
-            currentCityInI1 = i1.cities.get(currentIndex);
-            currentCityInI2 = i2.cities.get(currentIndex);
-
-            if(!temp1.contains(currentCityInI2)){
-                temp1.add(currentCityInI2);
-            }
-
-            if(!temp2.contains(currentCityInI1)){
-                temp2.add(currentCityInI1);
-            }
-        }
-
-        Collections.rotate(temp1, start);
-        Collections.rotate(temp2, start);
-
-        temp1.add(temp1.get(0));
-        temp2.add(temp2.get(0));
-
-        Collections.copy(i1.cities, temp1);
-        Collections.copy(i2.cities, temp2);
-    }
-
     public static void crossover(ArrayList<Individual> individualArrayList, int i1, int i2) {
         int size = individualArrayList.get(i1).cities.size();
         int idx1 = ThreadLocalRandom.current().nextInt(size/4, size/2);
         int idx2 = ThreadLocalRandom.current().nextInt(size/2, (int) size*3/4);
-//        System.out.println("Idx1 =" + idx1);
-//        System.out.println("Idx2 = " + idx2);
-
-//        int idx1 = 3;
-//        int idx2 = 6;
 
         final int start = Math.min(idx1, idx2);
         final int end = Math.max(idx2, idx1);
